@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#611232">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/icon-app.png">
+  <link rel="icon" href="assets/icon-app.png">
+
+  <title>Radar Político — STG Yucatán</title>
+  <link rel="stylesheet" href="css/estilos.css">
+
+  <style>
+    /* =========================================================
+       ESTILOS ESPECÍFICOS DE LA PANTALLA DE BIENVENIDA/LOGIN
+       ========================================================= */
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-color: var(--negro);
+    }
+
+    /* --- PANTALLA DE BIENVENIDA --- */
+    #pantalla-bienvenida,
+    #pantalla-login {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      background: linear-gradient(160deg, var(--negro) 60%, var(--guinda-oscuro) 100%);
+      transition: opacity 0.3s ease, transform 0.3s ease;
+    }
+
+    #pantalla-login {
+      display: none;
+    }
+
+    .pantalla-oculta {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .bienvenida-logo {
+      width: 520px;
+      max-width: 100%;
+      margin-bottom: 32px;
+    }
+
+    .bienvenida-nombre {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--crema);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .bienvenida-subtitulo {
+      font-size: 0.9rem;
+      color: var(--gris);
+      margin-bottom: 4px;
+    }
+
+    .bienvenida-frase {
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: var(--crema);
+      font-style: italic;
+      margin: 20px 0 40px 0;
+      letter-spacing: 0.5px;
+      opacity: 0.9;
+    }
+
+    .bienvenida-separador {
+      width: 60px;
+      height: 2px;
+      background-color: var(--guinda-medio);
+      margin: 16px auto;
+      border-radius: 2px;
+    }
+
+    .bienvenida-btn {
+      padding: 14px 48px;
+      font-size: 1rem;
+      border-radius: 30px;
+      letter-spacing: 0.5px;
+    }
+
+    /* --- PANTALLA DE LOGIN --- */
+    #pantalla-login {
+      padding: 32px 24px;
+    }
+
+    .login-contenedor {
+      width: 100%;
+      max-width: 380px;
+    }
+
+    .login-encabezado {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .login-logo {
+      width: 150px;
+      max-width: 70%;
+      margin-bottom: 16px;
+    }
+
+    .login-titulo {
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--crema);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .login-subtitulo {
+      font-size: 0.8rem;
+      color: var(--gris);
+      margin-top: 4px;
+    }
+
+    .login-tarjeta {
+      background-color: var(--blanco);
+      border-radius: var(--radio);
+      padding: 24px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+    }
+
+    .login-tarjeta .campo label {
+      color: var(--negro);
+    }
+
+    .login-pie {
+      text-align: center;
+      margin-top: 18px;
+    }
+
+    .login-volver {
+      font-size: 0.8rem;
+      color: var(--gris);
+      cursor: pointer;
+      text-decoration: underline;
+      background: none;
+      border: none;
+      font-family: inherit;
+      transition: color 0.2s ease;
+    }
+
+    .login-volver:hover { color: var(--crema); }
+
+    /* Pie de página */
+    .pie-pagina {
+      text-align: center;
+      padding: 12px;
+      font-size: 0.7rem;
+      color: var(--gris);
+      background-color: var(--negro);
+      border-top: 1px solid #242424;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================
+       PANTALLA DE BIENVENIDA
+       ===================================================== -->
+  <div id="pantalla-bienvenida" role="main">
+
+    <img
+      src="assets/logo.png"
+      alt="STG — Secretaría Técnica del Gabinete"
+      class="bienvenida-logo"
+      onerror="this.style.display='none'"
+    >
+
+    <div class="bienvenida-nombre">Radar de Crisis &amp; Narrativas en medios </div>
+    <div class="bienvenida-subtitulo">Secretaría Técnica del Gabinete — Yucatán</div>
+
+    <div class="bienvenida-separador"></div>
+
+    <div class="bienvenida-frase">Frase institucional</div>
+
+    <button
+      class="btn btn-primario bienvenida-btn"
+      onclick="mostrarLogin()"
+    >
+      Iniciar sesión
+    </button>
+
+  </div>
+
+
+  <!-- =====================================================
+       PANTALLA DE LOGIN
+       ===================================================== -->
+  <div id="pantalla-login" role="main" aria-label="Formulario de acceso">
+    <div class="login-contenedor">
+
+      <div class="login-encabezado">
+        <img
+          src="assets/logo.png"
+          alt="STG Yucatán"
+          class="login-logo"
+          onerror="this.style.display='none'"
+        >
+        <div class="login-titulo">Acceso al Radar</div>
+        <div class="login-subtitulo">Uso interno — STG Yucatán</div>
+      </div>
+
+      <div class="login-tarjeta">
+
+        <!-- Mensaje de error -->
+        <div
+          id="error-login"
+          class="mensaje-error"
+          role="alert"
+          aria-live="assertive"
+        >
+          Usuario o contraseña incorrectos. Intenta de nuevo.
+        </div>
+
+        <!-- Campo usuario -->
+        <div class="campo">
+          <label for="usuario">Usuario</label>
+          <input
+            type="text"
+            id="usuario"
+            placeholder="tu.usuario"
+            autocomplete="username"
+            aria-required="true"
+            aria-describedby="error-login"
+          >
+        </div>
+
+        <!-- Campo contraseña -->
+        <div class="campo">
+          <label for="contrasena">Contraseña</label>
+          <input
+            type="password"
+            id="contrasena"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            aria-required="true"
+            aria-describedby="error-login"
+            onkeydown="if(event.key==='Enter') iniciarSesion()"
+          >
+        </div>
+
+        <!-- Botón de login -->
+        <button
+          id="btn-login"
+          class="btn btn-primario btn-bloque"
+          onclick="iniciarSesion()"
+        >
+          Entrar
+        </button>
+
+      </div>
+
+      <!-- Volver a bienvenida -->
+      <div class="login-pie">
+        <button class="login-volver" onclick="mostrarBienvenida()">
+          Volver atrás
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- =====================================================
+       PIE DE PÁGINA
+       ===================================================== -->
+  <footer class="pie-pagina">
+    Gobierno del Estado de Yucatán — Secretaría Técnica del Gabinete — Uso interno / Confidencial
+  </footer>
+
+
+  <!-- =====================================================
+       JAVASCRIPT
+       ===================================================== -->
+  <script src="js/auth.js"></script>
+  <script>
+    // ---------------------------------------------------------
+    // NAVEGACIÓN ENTRE PANTALLAS
+    // ---------------------------------------------------------
+
+    function mostrarLogin() {
+      const bienvenida = document.getElementById("pantalla-bienvenida");
+      const login      = document.getElementById("pantalla-login");
+
+      bienvenida.style.opacity = "0";
+      setTimeout(() => {
+        bienvenida.style.display = "none";
+        login.style.display      = "flex";
+        login.style.opacity      = "0";
+        requestAnimationFrame(() => {
+          login.style.opacity = "1";
+        });
+        document.getElementById("usuario").focus();
+      }, 200);
+    }
+
+    function mostrarBienvenida() {
+      const bienvenida = document.getElementById("pantalla-bienvenida");
+      const login      = document.getElementById("pantalla-login");
+
+      login.style.opacity = "0";
+      setTimeout(() => {
+        login.style.display      = "none";
+        bienvenida.style.display = "flex";
+        bienvenida.style.opacity = "0";
+        requestAnimationFrame(() => {
+          bienvenida.style.opacity = "1";
+        });
+      }, 200);
+
+      limpiarError();
+    }
+
+    function limpiarError() {
+      document.getElementById("error-login").classList.remove("mensaje-visible");
+    }
+
+    function mostrarError(mensaje) {
+      const error = document.getElementById("error-login");
+      error.textContent = mensaje;
+      error.classList.add("mensaje-visible");
+    }
+
+    // ---------------------------------------------------------
+    // LOGIN
+    // ---------------------------------------------------------
+
+    async function iniciarSesion() {
+      const usuario    = document.getElementById("usuario").value.trim();
+      const contrasena = document.getElementById("contrasena").value;
+      const btn        = document.getElementById("btn-login");
+
+      limpiarError();
+
+      if (!usuario || !contrasena) {
+        mostrarError("Por favor ingresa tu usuario y contraseña.");
+        return;
+      }
+
+      btn.textContent = "Verificando...";
+      btn.disabled    = true;
+
+      try {
+        const resultado = await login(usuario, contrasena);
+
+        if (resultado.exito) {
+          window.location.href = "dashboard.html";
+        } else {
+          mostrarError(resultado.mensaje || "Usuario o contraseña incorrectos.");
+          btn.textContent = "Entrar";
+          btn.disabled    = false;
+        }
+
+      } catch (error) {
+        mostrarError("Error de conexión. Intenta de nuevo.");
+        btn.textContent = "Entrar";
+        btn.disabled    = false;
+      }
+    }
+
+    // ---------------------------------------------------------
+    // VERIFICAR SESIÓN ACTIVA
+    // ---------------------------------------------------------
+    window.addEventListener("load", () => {
+      if (obtenerToken()) {
+        window.location.href = "dashboard.html";
+      }
+    });
+  </script>
+
+</body>
+</html>

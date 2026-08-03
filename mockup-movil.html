@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mockup Móvil — Radar Político</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+
+    body {
+      background: #1a1a2e;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 40px 20px;
+      gap: 60px;
+    }
+
+    h1 {
+      color: #e6d194;
+      font-size: 1rem;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      text-align: center;
+      opacity: 0.7;
+    }
+
+    /* ── CONTENEDOR DE PANTALLAS ── */
+    .pantallas {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: center;
+      align-items: flex-start;
+    }
+
+    /* ── TELÉFONO ── */
+    .telefono-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .etiqueta-pantalla {
+      color: #e6d194;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      text-align: center;
+      opacity: 0.85;
+    }
+
+    .telefono {
+      width: 320px;
+      height: 620px;
+      background: #111316;
+      border-radius: 36px;
+      border: 6px solid #2a2d35;
+      box-shadow:
+        0 0 0 1px #3a3d45,
+        0 24px 64px rgba(0,0,0,0.7),
+        inset 0 1px 0 rgba(255,255,255,0.05);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+    }
+
+    /* Notch */
+    .telefono::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100px;
+      height: 22px;
+      background: #2a2d35;
+      border-radius: 0 0 16px 16px;
+      z-index: 10;
+    }
+
+    /* ── NAVBAR ── */
+    .m-navbar {
+      background: #0c0e11;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding: 28px 14px 10px 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .m-navbar-marca {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .m-logo {
+      width: 28px;
+      height: 28px;
+      background: #611232;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.6rem;
+      color: #e6d194;
+      font-weight: 700;
+    }
+
+    .m-navbar-titulo {
+      font-size: 0.72rem;
+      font-weight: 700;
+      color: #e6d194;
+      line-height: 1.3;
+    }
+
+    .m-navbar-acciones {
+      display: flex;
+      gap: 6px;
+    }
+
+    .m-btn-sm {
+      background: #222830;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 6px;
+      padding: 4px 8px;
+      font-size: 0.6rem;
+      color: #dde1e7;
+      font-weight: 600;
+    }
+
+    /* ── SELECTOR DE TURNOS ── */
+    .m-selector {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      padding: 10px 12px;
+      background: #111316;
+      flex-shrink: 0;
+    }
+
+    .m-turno {
+      background: #1a1e24;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 7px;
+      padding: 8px 4px;
+      text-align: center;
+    }
+
+    .m-turno.activo {
+      background: #611232;
+      border-color: #9b2247;
+    }
+
+    .m-turno-nombre {
+      font-size: 0.6rem;
+      font-weight: 700;
+      color: #dde1e7;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .m-turno.activo .m-turno-nombre { color: #e6d194; }
+
+    .m-turno-fecha {
+      font-size: 0.55rem;
+      color: #7a8190;
+      margin-top: 3px;
+    }
+
+    .m-turno.activo .m-turno-fecha { color: #e6d194; opacity: 0.65; }
+
+    /* ── CONTENIDO SCROLLEABLE ── */
+    .m-contenido {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 12px;
+      scrollbar-width: none;
+    }
+
+    .m-contenido::-webkit-scrollbar { display: none; }
+
+    /* ── TAB BAR ── */
+    .m-tabbar {
+      background: #0c0e11;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 0 12px 0;
+      flex-shrink: 0;
+    }
+
+    .m-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+    }
+
+    .m-tab-icono {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .m-tab-label {
+      font-size: 0.52rem;
+      font-weight: 600;
+      color: #7a8190;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+
+    .m-tab.activo .m-tab-label { color: #c4375a; }
+    .m-tab.activo .m-tab-icono { filter: none; }
+
+    .m-tab-indicador {
+      width: 4px;
+      height: 4px;
+      background: #c4375a;
+      border-radius: 50%;
+      margin-bottom: 1px;
+    }
+
+    /* ══════════════════════════════════════════
+       PANTALLA 1 — TABLERO
+    ══════════════════════════════════════════ */
+
+    /* Tablero ejecutivo 3+2 */
+    .m-tablero {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 10px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+
+    .m-celda {
+      padding: 12px 6px;
+      text-align: center;
+      color: #fff;
+    }
+
+    .m-celda:nth-child(1) { background: #BF1D0C; }
+    .m-celda:nth-child(2) { background: #5B1323; }
+    .m-celda:nth-child(3) { background: #69201C; }
+    .m-celda:nth-child(4) { background: #B7921F; grid-column: 1 / span 2; }
+    .m-celda:nth-child(5) { background: #325525; }
+
+    .m-celda-num {
+      font-size: 1.4rem;
+      font-weight: 700;
+      line-height: 1;
+    }
+
+    .m-celda-label {
+      font-size: 0.52rem;
+      opacity: 0.85;
+      margin-top: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    /* Tarjeta genérica */
+    .m-tarjeta {
+      background: #1a1e24;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 8px;
+      margin-bottom: 10px;
+      overflow: hidden;
+    }
+
+    .m-tarjeta-enc {
+      background: #611232;
+      color: #e6d194;
+      padding: 6px 12px;
+      font-size: 0.58rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      text-align: center;
+    }
+
+    .m-tarjeta-body {
+      padding: 10px 12px;
+    }
+
+    /* Alerta */
+    .m-alerta {
+      border-left: 3px solid #e03a25;
+      background: rgba(224,58,37,0.08);
+      padding: 8px 10px;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 7px;
+      font-size: 0.62rem;
+      line-height: 1.5;
+      color: #b0b8c4;
+    }
+
+    .m-alerta strong { color: #f08070; }
+
+    /* ══════════════════════════════════════════
+       PANTALLA 2 — CRISIS
+    ══════════════════════════════════════════ */
+    .m-ficha {
+      background: #222830;
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 7px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+
+    .m-ficha-enc {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .m-ficha-num {
+      background: rgba(255,255,255,0.06);
+      color: #e6d194;
+      min-width: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .m-ficha-titulo {
+      flex: 1;
+      padding: 8px 10px;
+      font-size: 0.65rem;
+      line-height: 1.45;
+      color: #dde1e7;
+      font-weight: 500;
+    }
+
+    .m-ficha-nivel {
+      min-width: 52px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.5rem;
+      font-weight: 700;
+      color: #fff;
+      text-transform: uppercase;
+      padding: 4px;
+      letter-spacing: 0.3px;
+      text-align: center;
+    }
+
+    .m-ficha-toggle {
+      border-top: 1px solid rgba(255,255,255,0.06);
+      padding: 6px;
+      font-size: 0.58rem;
+      color: #c4375a;
+      text-align: center;
+      font-weight: 600;
+    }
+
+    .m-ficha-cuerpo {
+      padding: 8px 10px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.6rem;
+      line-height: 1.6;
+      color: #b0b8c4;
+    }
+
+    /* ══════════════════════════════════════════
+       PANTALLA 3 — CAMBIOS
+    ══════════════════════════════════════════ */
+    .m-cambio {
+      border-left: 3px solid transparent;
+      border-radius: 0 6px 6px 0;
+      margin-bottom: 7px;
+      overflow: hidden;
+    }
+
+    .m-cambio-cat {
+      font-size: 0.55rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #7a8190;
+      padding: 5px 10px 3px;
+    }
+
+    .m-cambio-lista {
+      padding: 0 10px 7px 18px;
+      font-size: 0.6rem;
+      color: #b0b8c4;
+      line-height: 1.7;
+    }
+
+    .m-cambio-lista li { margin-bottom: 1px; }
+
+    .m-cambio.escalan    { border-left-color: #e03a25; background: rgba(224,58,37,0.06); }
+    .m-cambio.disminuyen { border-left-color: #3d6b2e; background: rgba(61,107,46,0.07); }
+    .m-cambio.nuevos     { border-left-color: #4a64b8; background: rgba(42,53,96,0.2); }
+    .m-cambio.permanecen { border-left-color: #3a3f47; background: rgba(30,34,38,0.5); }
+    .m-cambio.salen      { border-left-color: #6b7280; background: rgba(58,63,71,0.4); }
+
+    /* ══════════════════════════════════════════
+       PANTALLA 4 — RESUMEN
+    ══════════════════════════════════════════ */
+    .m-balance {
+      background: rgba(97,18,50,0.35);
+      border: 1px solid rgba(155,34,71,0.3);
+      color: #e6d194;
+      font-size: 0.62rem;
+      font-weight: 600;
+      padding: 8px 10px;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      text-align: center;
+      line-height: 1.5;
+    }
+
+    .m-subtitulo {
+      font-size: 0.58rem;
+      font-weight: 700;
+      color: #c4375a;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin: 10px 0 4px;
+    }
+
+    .m-texto {
+      font-size: 0.6rem;
+      line-height: 1.65;
+      color: #b0b8c4;
+    }
+
+    .m-oportunidad {
+      background: #222830;
+      border: 1px solid #3d6b2e;
+      border-radius: 7px;
+      margin-bottom: 8px;
+      overflow: hidden;
+    }
+
+    .m-op-enc {
+      display: flex;
+      align-items: stretch;
+    }
+
+    .m-op-num {
+      background: #3d6b2e;
+      color: #fff;
+      min-width: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+      font-weight: 700;
+    }
+
+    .m-op-titulo {
+      flex: 1;
+      padding: 8px 10px;
+      font-size: 0.62rem;
+      line-height: 1.4;
+      color: #dde1e7;
+      font-weight: 500;
+    }
+
+    .m-op-body {
+      padding: 6px 10px 8px 10px;
+      border-top: 1px solid rgba(255,255,255,0.06);
+      font-size: 0.58rem;
+      line-height: 1.65;
+      color: #b0b8c4;
+    }
+
+    /* ── LÍNEA SEPARADORA DE SECCIONES ── */
+    .seccion-titulo {
+      color: #7a8190;
+      font-size: 0.6rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin: 4px 0 8px;
+    }
+
+    /* ── INDICADOR DE SWIPE ── */
+    .swipe-hint {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 6px 0 2px;
+    }
+
+    .swipe-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.15);
+    }
+
+    .swipe-dot.activo { background: #c4375a; width: 14px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+
+  <h1>Mockup — Visualización Móvil · Radar Político STG</h1>
+
+  <div class="pantallas">
+
+    <!-- ══════════════════════════════
+         PANTALLA 1: TABLERO
+    ══════════════════════════════ -->
+    <div class="telefono-wrapper">
+      <div class="etiqueta-pantalla">① Tablero</div>
+      <div class="telefono">
+
+        <div class="m-navbar">
+          <div class="m-navbar-marca">
+            <div class="m-logo">STG</div>
+            <div class="m-navbar-titulo">Radar de Crisis<br>&amp; Narrativas</div>
+          </div>
+          <div class="m-navbar-acciones">
+            <div class="m-btn-sm">☀</div>
+            <div class="m-btn-sm">Salir</div>
+          </div>
+        </div>
+
+        <div class="m-selector">
+          <div class="m-turno activo">
+            <div class="m-turno-nombre">Matutino</div>
+            <div class="m-turno-fecha">Hoy 07:15 hrs</div>
+          </div>
+          <div class="m-turno">
+            <div class="m-turno-nombre">Vespertino</div>
+            <div class="m-turno-fecha">Sin reporte</div>
+          </div>
+          <div class="m-turno">
+            <div class="m-turno-nombre">Nocturno</div>
+            <div class="m-turno-fecha">Ayer 22:03 hrs</div>
+          </div>
+        </div>
+
+        <div class="m-contenido">
+
+          <div class="m-tablero">
+            <div class="m-celda">
+              <div class="m-celda-num">3</div>
+              <div class="m-celda-label">Crisis Críticas</div>
+            </div>
+            <div class="m-celda">
+              <div class="m-celda-num">11</div>
+              <div class="m-celda-label">Crisis Activas</div>
+            </div>
+            <div class="m-celda">
+              <div class="m-celda-num">5</div>
+              <div class="m-celda-label">Frentes Críticos</div>
+            </div>
+            <div class="m-celda">
+              <div class="m-celda-num">+4</div>
+              <div class="m-celda-label">Cambios vs. Anterior</div>
+            </div>
+            <div class="m-celda">
+              <div class="m-celda-num">2</div>
+              <div class="m-celda-label">Oportunidades</div>
+            </div>
+          </div>
+
+          <div class="m-tarjeta">
+            <div class="m-tarjeta-enc">Alertas Clave</div>
+            <div class="m-tarjeta-body">
+              <div class="m-alerta"><strong>► Protesta magisterial —</strong> Bloqueos en vías principales de Mérida; riesgo de escalamiento antes de negociación prevista para las 14:00 hrs.</div>
+              <div class="m-alerta"><strong>► Deuda municipal —</strong> Nota en medios nacionales cuestiona cifras publicadas por el Gobierno del Estado.</div>
+              <div class="m-alerta"><strong>► Seguridad en Tizimín —</strong> Tercer incidente en 10 días; alcaldía sin declaración oficial.</div>
+            </div>
+          </div>
+
+          <div class="swipe-hint">
+            <div class="swipe-dot activo"></div>
+            <div class="swipe-dot"></div>
+            <div class="swipe-dot"></div>
+            <div class="swipe-dot"></div>
+          </div>
+
+        </div>
+
+        <div class="m-tabbar">
+          <div class="m-tab activo">
+            <div class="m-tab-indicador"></div>
+            <div class="m-tab-icono">📊</div>
+            <div class="m-tab-label">Tablero</div>
+          </div>
+          <div class="m-tab">
+            <div class="m-tab-icono">⚠️</div>
+            <div class="m-tab-label">Crisis</div>
+          </div>
+          <div class="m-tab">
+            <div class="m-tab-icono">🔄</div>
+            <div class="m-tab-label">Cambios</div>
+          </div>
+          <div class="m-tab">
+            <div class="m-tab-icono">📄</div>
+            <div class="m-tab-label">Resumen</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════
+         PANTALLA 2: CRISIS
+    ══════════════════════════════ -->
+    <div class="telefono-wrapper">
+      <div class="etiqueta-pantalla">② Crisis</div>
+      <div class="telefono">
+
+        <div class="m-navbar">
+          <div class="m-navbar-marca">
+            <div class="m-logo">STG</div>
+            <div class="m-navbar-titulo">Radar de Crisis<br>&amp; Narrativas</div>
+          </div>
+          <div class="m-navbar-acciones">
+            <div class="m-btn-sm">☀</div>
+            <div class="m-btn-sm">Salir</div>
+          </div>
+        </div>
+
+        <div class="m-selector">
+          <div class="m-turno activo">
+            <div class="m-turno-nombre">Matutino</div>
+            <div class="m-turno-fecha">Hoy 07:15 hrs</div>
+          </div>
+          <div class="m-turno">
+            <div class="m-turno-nombre">Vespertino</div>
+            <div class="m-turno-fecha">Sin reporte</div>
+          </div>
+          <div class="m-turno">
+            <div class="m-turno-nombre">Nocturno</div>
+            <div class="m-turno-fecha">Ayer 22:03 hrs</div>
+          </div>
+        </div>
+
+        <div class="m-contenido">
+
+          <div class="seccion-titulo">Fichas de Monitoreo — 11 activas</div>
+
+          <div class="m-ficha">
+            <div class="m-ficha-enc">
+              <div class="m-ficha-num">#1</div>
+              <div class="m-ficha-titulo">Protesta magisterial — bloqueo vías principales Mérida</div>
+              <div class="m-ficha-nivel" style="background:#e03a25;">CRÍTICO</div>
+            </div>
+            <div class="m-ficha-cuerpo">
+              <strong>Estado:</strong> Activo con escalamiento previsto. Negociación programada 14:00 hrs.<br>
+              <span style="margin-top:4px;display:block;"><strong>Inmediata:</strong> Coordinar con SSP presencia preventiva en zona de bloqueo.</span>
+            </div>
+            <div class="m-ficha-toggle">Ocultar detalle ▲</div>
+          </div>
+
+          <div class="m-ficha">
+            <div class="m-ficha-enc">
+              <div class="m-ficha-num">#2</div>
+              <div class="m-ficha-titulo">Cuestionamiento deuda municipal en medios nacionales</div>
+              <div class="m-ficha-nivel" style="background:#d4692a;">ALTO</div>
+            </div>
+            <div class="m-ficha-toggle">Ver detalle ▼</div>
+          </div>
+
+          <div class="m-ficha">
+            <div class="m-ficha-enc">
+              <div class="m-ficha-num">#3</div>
+              <div class="m-ficha-titulo">Incidentes de seguridad en Tizimín — tercer evento</div>
+              <div class="m-ficha-nivel" style="background:#d4692a;">ALTO</div>
+            </div>
+            <div class="m-ficha-toggle">Ver detalle ▼</div>
+          </div>
+
+          <div class="m-ficha">
+            <div class="m-ficha-enc">
+              <div class="m-ficha-num">#4</div>
+              <div class="m-ficha-titulo">Retraso en obra del Periférico Norte — quejas vecinales</div>
+              <div class="m-ficha-nivel" style="background:#c9a020;">MEDIO-ALTO</div>
+            </div>
+            <div class="m-ficha-toggle">Ver detalle ▼</div>
+          </div>
+
+          <div class="swipe-hint">
+            <div class="swipe-dot"></div>
+            <div class="swipe-dot activo"></div>
+            <div class="swipe-dot"></div>
+            <div class="swipe-dot"></div>
+          </div>
+
+        </div>
+
+        <div class="m-tabbar">
+          <div class="m-tab">
+            <div class="m-tab-icono">📊</div>
+            <div class="m-tab-label">Tablero</div>
+          </div>
+          <div class="m-tab activo">
+            <div class="m-tab-indicador"></div>
+            <div class="m-tab-icono">⚠️</div>
+            <div class="m-tab-label">Crisis</div>
+          </div>
+          <div class="m-tab">
+            <div class="m-tab-icono">🔄</div>
+            <div class="m-tab-label">Cambios</div>
+          </div>
+          <div class="m-tab">
+            <div class="m-tab-icono">📄</div>
+            <div class="m-tab-label">Resumen</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════
+         PANTALLA 3: CAMBIOS
+    ══════════════════════════════ -->
+    <div class="telefono-wrapper">
+      <div class="etiqueta-pantalla">③ Cambios</div>
+      <div class="telefono">
+
+        <div class="m-navbar">
+          <div class="m-navbar-marca">
+            <div class="m-logo">STG</div>
+            <div class="m-navbar-titulo">Radar de Crisis<br>&amp; Narrativas</div>
+          </div>
+          <div class="m-navbar-acciones">
+            <div class="m-btn-sm">☀</div>
+            <div class="m-btn-sm">Salir</div>
+          </div>
+        </div>
+
+        <div class="m-selector">
+          <div class="m-turno activo">
+            <div class="m-turno-nombre">Matutino</div>
+            <div class="m-turno-fecha">Hoy 07:15 hrs</div>
+          </div>
+          <div class="m-turno">
+            <div class="m-turno-nombre">Vespertino</div>
+            <div class="m-turno-fecha">Sin reporte</div>
+          </div>
+          <div class="m-turno">
+            <div class="m-turno-nombre">Nocturno</div>
+            <div class="m-turno-fecha">Ayer 22:03 hrs</div>
+          </div>
+        </div>
+
+        <div class="m-contenido">
+
+          <div class="seccion-titulo">Cambios vs. Turno Anterior</div>
+
+          <div class="m-cambio escalan">
+            <div class="m-cambio-cat">B) Escalan</div>
+            <ul class="m-cambio-lista">
+              <li>Protesta magisterial</li>
+              <li>Deuda municipal</li>
+            </ul>
+          </div>
+
+          <div class="m-cambio nuevos">
+            <div class="m-cambio-cat">E) Nuevos</div>
+            <ul class="m-cambio-lista">
+              <li>Incidentes Tizimín</li>
+              <li>Retraso Periférico Norte</li>
+            </ul>
+          </div>
+
+          <div class="m-cambio disminuyen">
+            <div class="m-cambio-cat">C) Disminuyen</div>
+            <ul class="m-cambio-lista">
+              <li>Conflicto vecinal Kanasín</li>
+            </ul>
+          </div>
+
+          <div class="m-cambio permanecen">
+            <div class="m-cambio-cat">A) Permanecen</div>
+            <ul class="m-cambio-lista">
+              <li>Sequía Oriente</li>
+              <li>Rezago educativo Valladolid</li>
+              <li>Obra Puerto Progreso</li>
+            </ul>
+          </div>
+
+          <div class="m-cambio salen">
+            <div class="m-cambio-cat">D) Salen</div>
+            <ul class="m-cambio-lista">
+              <li>Manifestación Hacienda (resuelta)</li>
+            </ul>
+          </div>
+
+          <div class="swipe-hint">
+            <div class="swipe-dot"></div>
+            <div class="swipe-dot"></div>
+            <div class="swipe-dot activo"></div>
+            <div class="swipe-dot"></div>
+          </div>
+
+        </div>
+
+        <div class="m-tabbar">
+          <div class="m-tab">
+            <div class="m-tab-icono">📊</div>
+            <div class="m-tab-label">Tablero</div>
+          </div>
+          <div class="m-tab">
+            <div class="m-tab-icono">⚠️</div>
+            <div class="m-tab-label">Crisis</div>
+          </div>
+          <div class="m-tab activo">
+            <div class="m-tab-indicador"></div>
+            <div class="m-tab-icono">🔄</div>
+            <div class="m-tab-label">Cambios</div>
+          </div>
+          <div class="m-tab">
+            <div class="m-tab-icono">📄</div>
+            <div class="m-tab-label">Resumen</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- ══════════════════════════════
+         PANTALLA 4: RESUMEN
+    ══════════════════════════════ -->
+    <div class="telefono-wrapper">
+      <div class="etiqueta-pantalla">④ Resumen</div>
+      <div class="telefono">
+
+        <div class="m-navbar">
+          <div class="m-navbar-marca">
+            <div class="m-logo">STG</div>
+            <div class="m-navbar-titulo">Radar de Crisis<br>&amp; Narrativas</div>
+          </div>
+          <div class="m-navbar-acciones">
+            <div class="m-btn-sm">☀</div>
+            <div class="m-btn-sm">Salir</div>
+          </div>
+        </div>
+
+        <div class="m-selector">
+          <div class="m-turno activo">
+            <div class="m-turno-nombre">Matutino</div>
+            <div class="m-turno-fecha">Hoy 07:15 hrs</div>
+          </div>
+          <div class="m-turno">
+            <div class="m-turno-nombre">Vespertino</div>
+            <div class="m-turno-fecha">Sin reporte</div>
+          </div>
+          <div class="m-turno">
+            <div class="m-turno-nombre">Nocturno</div>
+            <div class="m-turno-fecha">Ayer 22:03 hrs</div>
+          </div>
+        </div>
+
+        <div class="m-contenido">
+
+          <div class="m-balance">
+            Semana de alta tensión — 3 frentes críticos activos con potencial de escalamiento antes del mediodía.
+          </div>
+
+          <div class="m-subtitulo">Contexto político</div>
+          <div class="m-texto">El panorama matutino muestra un incremento sostenido en la conflictividad social, concentrada en el sector educativo y la seguridad en la región oriente. Las negociaciones con el magisterio representan la variable más determinante del día.</div>
+
+          <div class="m-subtitulo">Riesgos principales</div>
+          <div class="m-texto">La coincidencia temporal de la protesta magisterial con la cobertura de medios nacionales sobre deuda municipal amplifica el riesgo reputacional para la administración estatal en las próximas 6 horas.</div>
+
+          <div class="m-subtitulo">Oportunidades activas</div>
+
+          <div class="m-oportunidad">
+            <div class="m-op-enc">
+              <div class="m-op-num">#O1</div>
+              <div class="m-op-titulo">Anuncio de inversión en infraestructura hidráulica — oriente del estado</div>
+            </div>
+            <div class="m-op-body">
+              ► Posicionamiento proactivo antes del inicio de temporada de lluvias.<br>
+              ► Contrapeso narrativo frente a crisis de sequía.
+            </div>
+          </div>
+
+          <div class="swipe-hint">
+            <div class="swipe-dot"></div>
+            <div class="swipe-dot"></div>
+            <div class="swipe-dot"></div>
+            <div class="swipe-dot activo"></div>
+          </div>
+
+        </div>
+
+        <div class="m-tabbar">
+          <div class="m-tab">
+            <div class="m-tab-icono">📊</div>
+            <div class="m-tab-label">Tablero</div>
+          </div>
+          <div class="m-tab">
+            <div class="m-tab-icono">⚠️</div>
+            <div class="m-tab-label">Crisis</div>
+          </div>
+          <div class="m-tab">
+            <div class="m-tab-icono">🔄</div>
+            <div class="m-tab-label">Cambios</div>
+          </div>
+          <div class="m-tab activo">
+            <div class="m-tab-indicador"></div>
+            <div class="m-tab-icono">📄</div>
+            <div class="m-tab-label">Resumen</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+
+</body>
+</html>

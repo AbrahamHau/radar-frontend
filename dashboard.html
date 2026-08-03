@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#611232">
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="assets/icon-app.png">
+  <link rel="icon" href="assets/icon-app.png">
+  <title>Dashboard — Radar Político STG</title>
+  <link rel="stylesheet" href="css/estilos.css">
+  <!-- Aplicar tema guardado antes del primer render para evitar flash -->
+  <script>
+    (function() {
+      const tema = localStorage.getItem("radar-tema") || "oscuro";
+      document.documentElement.setAttribute("data-tema", tema);
+    })();
+  </script>
+  <style>
+    #splash {
+      position: fixed;
+      inset: 0;
+      background: linear-gradient(160deg, #0c0e11 0%, var(--guinda-oscuro) 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      z-index: 9999;
+      opacity: 1;
+      transition: opacity 0.35s ease;
+    }
+    #splash img {
+      width: 260px;
+      max-width: 70vw;
+    }
+    #splash .splash-nombre {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--crema);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      text-align: center;
+    }
+    #splash .splash-subtitulo {
+      font-size: 0.75rem;
+      color: var(--crema);
+      opacity: 0.5;
+      letter-spacing: 0.8px;
+      text-align: center;
+    }
+    #splash .splash-linea {
+      width: 48px;
+      height: 2px;
+      background-color: var(--guinda-claro);
+      border-radius: 2px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- =====================================================
+       SPLASH INSTITUCIONAL (transición desde login)
+       ===================================================== -->
+  <div id="splash" aria-hidden="true">
+    <img src="assets/logo.png" alt="" onerror="this.style.display='none'">
+    <div class="splash-linea"></div>
+    <div class="splash-nombre">Radar de Crisis &amp; Narrativas</div>
+    <div class="splash-subtitulo">STG — Yucatán</div>
+  </div>
+
+
+  <!-- =====================================================
+       NAVBAR
+       ===================================================== -->
+  <nav class="navbar" role="banner">
+    <div class="navbar-marca">
+      <img
+        src="assets/logo.png"
+        alt="STG Yucatán"
+        onerror="this.style.display='none'"
+      >
+      <div>
+        <div class="navbar-titulo">Radar de Crisis &amp; Narrativas</div>
+        <div class="navbar-subtitulo">STG — Yucatán</div>
+      </div>
+    </div>
+    <div class="navbar-acciones">
+      <button
+        id="btn-tema"
+        class="btn btn-secundario btn-sm"
+        onclick="alternarTema()"
+        aria-label="Cambiar tema"
+        title="Cambiar tema"
+      >◑</button>
+
+      <div class="navbar-menu">
+        <button
+          id="btn-menu-usuario"
+          class="btn btn-secundario btn-sm"
+          onclick="alternarMenuUsuario()"
+          aria-haspopup="true"
+          aria-expanded="false"
+          aria-label="Menú de usuario"
+          title="Menú"
+        >☰</button>
+
+        <div class="menu-desplegable" id="menu-usuario" role="menu">
+          <div class="menu-usuario-email" id="navbar-usuario" aria-live="polite"></div>
+          <div class="menu-separador"></div>
+          <button class="menu-item" role="menuitem" onclick="cerrarMenuUsuario(); abrirHistorial();">
+            Ver historial de reportes
+          </button>
+          <button class="menu-item" role="menuitem" onclick="cerrarSesion()">
+            Salir
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+
+  <!-- =====================================================
+       CONTENIDO PRINCIPAL
+       ===================================================== -->
+  <main class="contenedor-principal" style="padding: 16px; padding-top: 80px; padding-bottom: 60px;">
+
+    <!-- NOTIFICACIONES -->
+    <div class="notificaciones" aria-live="assertive">
+      <div id="notificacion-error" class="mensaje-error" role="alert"></div>
+      <div id="notificacion-exito" class="mensaje-exito" role="status"></div>
+    </div>
+
+    <!-- PANEL ADMINISTRADOR (siempre visible, sobre el grid) -->
+    <div class="panel-admin" id="panel-admin" aria-label="Panel de administrador">
+      <div class="panel-admin-titulo">⚙ Panel de Administrador</div>
+      <div class="panel-admin-acciones">
+        <button
+          class="btn btn-secundario btn-sm"
+          onclick="cargarSelectorTurnos()"
+        >
+          Actualizar disponibilidad
+        </button>
+        <button
+          class="btn btn-secundario btn-sm"
+          onclick="abrirFenomenosSugeridos()"
+        >
+          Fenómenos sugeridos
+        </button>
+      </div>
+    </div>
+
+    <!-- SELECTOR DE TURNOS (siempre visible) -->
+    <div class="selector-turnos" role="group" aria-label="Seleccionar turno">
+      <button
+        id="btn-turno-matutino"
+        class="btn-turno"
+        onclick="seleccionarTurno('matutino')"
+        aria-pressed="false"
+      >
+        <div class="turno-nombre">Matutino</div>
+        <div class="turno-fecha" id="fecha-turno-matutino">Cargando...</div>
+      </button>
+      <button
+        id="btn-turno-vespertino"
+        class="btn-turno"
+        onclick="seleccionarTurno('vespertino')"
+        aria-pressed="false"
+      >
+        <div class="turno-nombre">Vespertino</div>
+        <div class="turno-fecha" id="fecha-turno-vespertino">Cargando...</div>
+      </button>
+      <button
+        id="btn-turno-nocturno"
+        class="btn-turno"
+        onclick="seleccionarTurno('nocturno')"
+        aria-pressed="false"
+      >
+        <div class="turno-nombre">Nocturno</div>
+        <div class="turno-fecha" id="fecha-turno-nocturno">Cargando...</div>
+      </button>
+    </div>
+
+    <!-- LOADER -->
+    <div class="loader" id="cargando-reporte" style="display:none;" role="status" aria-label="Cargando reporte">
+      <div class="spinner" aria-hidden="true"></div>
+      <div class="loader-texto">Cargando reporte...</div>
+    </div>
+
+    <!-- =====================================================
+         DASHBOARD GRID — 4 PANELES
+         En móvil/tablet: un panel visible a la vez (tab bar)
+         En escritorio:   todos visibles en grid 2 columnas
+         ===================================================== -->
+    <div class="dashboard-grid" id="reporte-contenido" style="display:none;">
+
+      <!-- PANEL 1: TABLERO -->
+      <div class="tab-panel" data-tab="tablero">
+
+        <div class="reporte-encabezado">
+          <div class="reporte-version" id="reporte-version"></div>
+          <div class="reporte-fecha"   id="reporte-fecha"></div>
+          <div class="reporte-hora"    id="reporte-hora"></div>
+          <div class="reporte-actualizacion" id="reporte-actualizacion"></div>
+        </div>
+
+        <div class="descarga-wrapper">
+          <button
+            id="btn-descargar"
+            class="btn btn-descarga"
+            onclick="descargarReporte('pdf', 'btn-descargar')"
+          >
+            Descargar PDF
+          </button>
+          <button
+            id="btn-descargar-word"
+            class="btn btn-descarga"
+            onclick="descargarReporte('word', 'btn-descargar-word')"
+          >
+            Descargar Word
+          </button>
+        </div>
+
+        <div class="tarjeta">
+          <div class="tarjeta-encabezado">Tablero Ejecutivo</div>
+          <div class="tablero" role="region" aria-label="Métricas del turno">
+            <div class="tablero-celda">
+              <div class="tablero-numero" id="tablero-criticas">—</div>
+              <div class="tablero-etiqueta">Crisis Críticas</div>
+            </div>
+            <div class="tablero-celda">
+              <div class="tablero-numero" id="tablero-activas">—</div>
+              <div class="tablero-etiqueta">Crisis Activas</div>
+            </div>
+            <div class="tablero-celda">
+              <div class="tablero-numero" id="tablero-frentes">—</div>
+              <div class="tablero-etiqueta">Frentes Críticos</div>
+            </div>
+            <div class="tablero-celda">
+              <div class="tablero-numero" id="tablero-cambios">—</div>
+              <div class="tablero-etiqueta">Cambios vs. Anterior</div>
+            </div>
+            <div class="tablero-celda">
+              <div class="tablero-numero" id="tablero-oportunidades">—</div>
+              <div class="tablero-etiqueta">Oportunidades</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="tarjeta">
+          <div class="tarjeta-encabezado">Alertas Clave</div>
+          <div class="tarjeta-cuerpo">
+            <div id="lista-alertas" aria-live="polite"></div>
+          </div>
+        </div>
+
+      </div>
+      <!-- fin panel tablero -->
+
+
+      <!-- COLUMNA DERECHA (escritorio) / paneles 2-3-4 (móvil) -->
+      <div class="tab-col-der">
+
+        <!-- PANEL 2: CAMBIOS -->
+        <div class="tab-panel" data-tab="cambios">
+          <div class="tarjeta">
+            <div class="tarjeta-encabezado">Cambios vs. Turno Anterior</div>
+            <table class="tabla-cambios" aria-label="Cambios respecto al turno anterior">
+              <thead>
+                <tr>
+                  <th scope="col" style="width:28%;">Categoría</th>
+                  <th scope="col">Temas</th>
+                </tr>
+              </thead>
+              <tbody id="tabla-cambios-body"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- PANEL 3: RESUMEN -->
+        <div class="tab-panel tab-activo" data-tab="resumen">
+          <div class="tarjeta">
+            <div class="tarjeta-encabezado">Resumen Ejecutivo</div>
+            <div class="tarjeta-cuerpo">
+              <div class="resumen-balance" id="resumen-balance"></div>
+              <div id="resumen-bloques"></div>
+            </div>
+          </div>
+          <div class="tarjeta">
+            <div class="tarjeta-encabezado">Oportunidades Activas</div>
+            <div class="tarjeta-cuerpo">
+              <div id="lista-oportunidades"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- PANEL 4: CRISIS -->
+        <div class="tab-panel" data-tab="crisis">
+          <div class="tarjeta">
+            <div class="tarjeta-encabezado">Fichas de Monitoreo</div>
+            <div class="tarjeta-cuerpo">
+              <div id="lista-fichas"></div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <!-- fin tab-col-der -->
+
+    </div>
+    <!-- fin dashboard-grid -->
+
+  </main>
+
+
+  <!-- BOTÓN DESCARGA FLOTANTE (móvil) -->
+  <div class="descarga-flotante-contenedor" id="descarga-flotante-contenedor">
+    <div class="menu-descarga-flotante" id="menu-descarga-flotante">
+      <button
+        class="menu-descarga-opcion"
+        onclick="descargarReporte('pdf', 'btn-descargar-flotante')"
+      >
+        PDF
+      </button>
+      <button
+        class="menu-descarga-opcion"
+        onclick="descargarReporte('word', 'btn-descargar-flotante')"
+      >
+        Word
+      </button>
+    </div>
+    <button
+      class="btn-descarga-flotante"
+      id="btn-descarga-flotante"
+      onclick="alternarMenuDescarga(event)"
+      aria-label="Descargar reporte"
+      aria-haspopup="true"
+    >
+      ⬇ Descargar
+    </button>
+  </div>
+
+  <!-- =====================================================
+       MODAL: HISTORIAL DE REPORTES
+       ===================================================== -->
+  <div
+    class="modal-overlay"
+    id="modal-historial"
+    style="display:none;"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-historial-titulo"
+    onclick="if (event.target === this) cerrarHistorial()"
+  >
+    <div class="modal-panel">
+      <div class="modal-encabezado">
+        <h2 id="modal-historial-titulo">Historial de reportes</h2>
+        <button
+          class="modal-cerrar"
+          onclick="cerrarHistorial()"
+          aria-label="Cerrar historial"
+        >✕</button>
+      </div>
+      <div class="modal-cuerpo" id="historial-lista">
+        <!-- Se llena dinámicamente desde app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================================================
+       MODAL: FENÓMENOS SUGERIDOS (curador semanal)
+       ===================================================== -->
+  <div
+    class="modal-overlay"
+    id="modal-fenomenos-sugeridos"
+    style="display:none;"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="modal-fenomenos-sugeridos-titulo"
+    onclick="if (event.target === this) cerrarFenomenosSugeridos()"
+  >
+    <div class="modal-panel">
+      <div class="modal-encabezado">
+        <h2 id="modal-fenomenos-sugeridos-titulo">Fenómenos sugeridos</h2>
+        <button
+          class="modal-cerrar"
+          onclick="cerrarFenomenosSugeridos()"
+          aria-label="Cerrar fenómenos sugeridos"
+        >✕</button>
+      </div>
+      <div class="modal-cuerpo" id="fenomenos-sugeridos-lista">
+        <!-- Se llena dinámicamente desde app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- TAB BAR (móvil/tablet ≤ 1023px) -->
+  <nav class="m-tabbar" aria-label="Navegación principal">
+    <button class="m-tab activo" data-tab="resumen" onclick="activarTab('resumen')">
+      <div class="m-tab-indicador"></div>
+      <div class="m-tab-icono">📄</div>
+      <div class="m-tab-label">Resumen</div>
+    </button>
+    <button class="m-tab" data-tab="tablero" onclick="activarTab('tablero')">
+      <div class="m-tab-indicador"></div>
+      <div class="m-tab-icono">📊</div>
+      <div class="m-tab-label">Tablero</div>
+    </button>
+    <button class="m-tab" data-tab="crisis" onclick="activarTab('crisis')">
+      <div class="m-tab-indicador"></div>
+      <div class="m-tab-icono">⚠️</div>
+      <div class="m-tab-label">Crisis</div>
+    </button>
+    <button class="m-tab" data-tab="cambios" onclick="activarTab('cambios')">
+      <div class="m-tab-indicador"></div>
+      <div class="m-tab-icono">🔄</div>
+      <div class="m-tab-label">Cambios</div>
+    </button>
+  </nav>
+
+
+  <!-- =====================================================
+       SCRIPTS
+       ===================================================== -->
+  <script src="js/auth.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script>
+    function alternarTema() {
+      const html   = document.documentElement;
+      const actual = html.getAttribute("data-tema") || "oscuro";
+      const nuevo  = actual === "oscuro" ? "claro" : "oscuro";
+      html.setAttribute("data-tema", nuevo);
+      localStorage.setItem("radar-tema", nuevo);
+      document.getElementById("btn-tema").textContent = nuevo === "oscuro" ? "◑" : "◑";
+    }
+
+    (function() {
+      const tema = document.documentElement.getAttribute("data-tema") || "oscuro";
+      window.addEventListener("DOMContentLoaded", () => {
+        const btn = document.getElementById("btn-tema");
+        if (btn) btn.textContent = tema === "oscuro" ? "◑" : "◑";
+      });
+    })();
+
+    window.addEventListener("load", () => {
+      const splash = document.getElementById("splash");
+      iniciarApp();
+      setTimeout(() => {
+        splash.style.opacity = "0";
+        setTimeout(() => splash.remove(), 380);
+      }, 750);
+    });
+
+    // Muestra/oculta el botón de descarga flotante según si hay reporte cargado
+    const observador = new MutationObserver(() => {
+      const reporte  = document.getElementById("reporte-contenido");
+      const flotante = document.getElementById("descarga-flotante-contenedor");
+      if (reporte && flotante) {
+        flotante.classList.toggle("visible", reporte.style.display !== "none");
+      }
+    });
+
+    const seccion = document.getElementById("reporte-contenido");
+    observador.observe(seccion || document.body, {
+      attributes: true,
+      attributeFilter: ["style"]
+    });
+  </script>
+
+</body>
+</html>

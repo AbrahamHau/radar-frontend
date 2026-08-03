@@ -1,0 +1,24 @@
+{
+  "name": "Radar de Crisis & Narrativas — STG Yucatán",
+  "short_name": "Radar",
+  "description": "Monitoreo político de crisis y narrativas — Secretaría Técnica del Gabinete, Yucatán",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#161a1d",
+  "theme_color": "#611232",
+  "icons": [
+    {
+      "src": "assets/icon-app-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/icon-app.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}
